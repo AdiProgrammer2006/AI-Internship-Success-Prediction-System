@@ -6,8 +6,8 @@ import joblib
 
 df = pd.read_csv(r"data/preprocessed_data.csv")
 
-X = df.drop("Placement(Y/N)?", axis=1)
-y = df["Placement(Y/N)?"]
+X = df.drop("placement_status", axis=1)
+y = df["placement_status"]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
