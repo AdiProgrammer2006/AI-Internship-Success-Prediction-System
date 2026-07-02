@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Future Career Predictor</h1>
+            <p>Enter your academic and extracurricular profile to estimate placement probability</p>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress" id="progress"></div>
+            <div class="step-circle active" data-step="1">1</div>
+            <div class="step-circle" data-step="2">2</div>
+            <div class="step-circle" data-step="3">3</div>
+            <div class="step-circle" data-step="4">4</div>
+        </div>
+
+        <form id="predictionForm">
+            <!-- STEP 1: Academic Profile -->
+            <div class="form-step active" data-step="1">
+                <h2>Academic Profile</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" value="21" required min="15" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender">
+                            <option value="1">Male</option>
+                            <option value="0">Female</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="cgpa">CGPA</label>
+                        <input type="number" id="cgpa" name="cgpa" value="8.5" step="0.01" min="0" max="10" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="attendance_percentage">Attendance %</label>
+                        <input type="number" id="attendance_percentage" name="attendance_percentage" value="85" step="0.1" min="0" max="100" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="backlogs">Active Backlogs</label>
+                        <input type="number" id="backlogs" name="backlogs" value="0" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="college_tier">College Tier</label>
+                        <select id="college_tier" name="college_tier">
+                            <option value="Tier_1">Tier 1</option>
+                            <option value="Tier_2" selected>Tier 2</option>
+                            <option value="Tier_3">Tier 3</option>
+                        </select>
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="branch">Engineering Branch</label>
+                        <select id="branch" name="branch">
+                            <option value="CSE" selected>Computer Science (CSE)</option>
+                            <option value="IT">Information Technology (IT)</option>
+                            <option value="ECE">Electronics & Communication (ECE)</option>
+                            <option value="EEE">Electrical & Electronics (EEE)</option>
+                            <option value="Mechanical">Mechanical Engineering</option>
+                            <option value="Civil">Civil Engineering</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Projects & Technical Experience -->
+            <div class="form-step" data-step="2">
+                <h2>Technical & Projects Portfolio</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="internships_count">Internships Count</label>
+                        <input type="number" id="internships_count" name="internships_count" value="1" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="projects_count">Projects Count</label>
+                        <input type="number" id="projects_count" name="projects_count" value="2" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="certifications_count">Certifications Count</label>
+                        <input type="number" id="certifications_count" name="certifications_count" value="1" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="hackathons_participated">Hackathons Attended</label>
+                        <input type="number" id="hackathons_participated" name="hackathons_participated" value="1" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="github_repos">GitHub Repositories</label>
+                        <input type="number" id="github_repos" name="github_repos" value="5" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="linkedin_connections">LinkedIn Connections</label>
+                        <input type="number" id="linkedin_connections" name="linkedin_connections" value="150" min="0" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Skill Scores -->
+            <div class="form-step" data-step="3">
+                <h2>Skill Metrics (Scores out of 100)</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="coding_skill_score">Coding Score</label>
+                        <input type="number" id="coding_skill_score" name="coding_skill_score" value="75" min="0" max="100" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="aptitude_score">Aptitude Score</label>
+                        <input type="number" id="aptitude_score" name="aptitude_score" value="80" min="0" max="100" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="communication_skill_score">Communication Score</label>
+                        <input type="number" id="communication_skill_score" name="communication_skill_score" value="78" min="0" max="100" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="logical_reasoning_score">Logical Reasoning Score</label>
+                        <input type="number" id="logical_reasoning_score" name="logical_reasoning_score" value="82" min="0" max="100" required>
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="mock_interview_score">Mock Interview Score</label>
+                        <input type="number" id="mock_interview_score" name="mock_interview_score" value="75" min="0" max="100" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Lifestyle & Extracurriculars -->
+            <div class="form-step" data-step="4">
+                <h2>Lifestyle & Leadership</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="extracurricular_score">Extracurricular Score (0-100)</label>
+                        <input type="number" id="extracurricular_score" name="extracurricular_score" value="65" min="0" max="100" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="leadership_score">Leadership Score (0-100)</label>
+                        <input type="number" id="leadership_score" name="leadership_score" value="60" min="0" max="100" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="volunteer_experience">Volunteer Experience (Y/N)</label>
+                        <select id="volunteer_experience" name="volunteer_experience">
+                            <option value="1">Yes</option>
+                            <option value="0" selected>No</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="sleep_hours">Avg Sleep Hours</label>
+                        <input type="number" id="sleep_hours" name="sleep_hours" value="7" step="0.1" min="0" max="24" required>
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="study_hours_per_day">Daily Study Hours</label>
+                        <input type="number" id="study_hours_per_day" name="study_hours_per_day" value="4" step="0.1" min="0" max="24" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" id="prevBtn" disabled>Previous</button>
+                <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                <button type="submit" class="btn btn-submit" id="submitBtn" style="display: none;">Predict Status</button>
+            </div>
+        </form>
+
+        <!-- Loader State -->
+        <div id="loader" class="loader-container" style="display: none;">
+            <div class="spinner"></div>
+            <p>Analyzing profile and communicating with predictive models...</p>
+        </div>
+
+        <!-- Result View -->
+        <div id="resultCard" class="result-card" style="display: none;">
+            <h3>Prediction Analysis</h3>
+            <div class="result-status" id="resultStatus">Placed</div>
+            <div class="confidence-bar-container">
+                <div class="confidence-bar" id="confidenceBar"></div>
+            </div>
+            <p id="resultConfidence">Confidence level: --</p>
+            <button class="btn btn-secondary" id="resetBtn">Analyze New Profile</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
