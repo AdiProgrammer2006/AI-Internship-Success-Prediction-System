@@ -1,123 +1,95 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pandas as pd
 import joblib
 
-app = FastAPI(title="Placement Prediction API")
+app = FastAPI(
+    title="Placement Prediction API",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 model = joblib.load("../model/placement_model.pkl")
 
+feature_names = (
+    pd.read_csv("../data/preprocessed_data.csv")
+    .drop(columns=["placement_status"])
+    .columns
+    .tolist()
+)
 
-class PlacementInput(BaseModel):
-    Gender: int
-    tenth_marks: float
-    twelfth_marks: float
-    Cgpa: float
-    Internships: int
-    Training: int
-    Backlog_5th_sem: int
-    Innovative_Project: float
-    Communication_level: int
-    Technical_Course: float
 
-    board10_CBSE: bool
-    board10_ICSE: bool
-    board10_State: bool
-    board10_WBBSE: bool
+class Student(BaseModel):
+    age: int
+    gender: int
+    cgpa: float
+    internships_count: int
+    projects_count: int
+    certifications_count: int
+    coding_skill_score: float
+    aptitude_score: float
+    communication_skill_score: float
+    logical_reasoning_score: float
+    hackathons_participated: int
+    github_repos: int
+    linkedin_connections: int
+    mock_interview_score: float
+    attendance_percentage: float
+    backlogs: int
+    extracurricular_score: float
+    leadership_score: float
+    volunteer_experience: int
+    sleep_hours: float
+    study_hours_per_day: float
 
-    board12_BSEB: bool
-    board12_CBSE: bool
-    board12_CISCE: bool
-    board12_Diploma: bool
-    board12_MSBTE_Diploma: bool
-    board12_ISC: bool
-    board12_ISE: bool
-    board12_MSBTE: bool
-    board12_Other_State: bool
-    board12_WBBSE: bool
-    board12_WBCHSE: bool
+    branch_CSE: int
+    branch_Civil: int
+    branch_ECE: int
+    branch_EEE: int
+    branch_IT: int
+    branch_Mechanical: int
 
-    Stream_Chemical_Engineering: bool
-    Stream_Civil_Engineering: bool
-    Stream_Computer_Science_and_Design: bool
-    Stream_Computer_Science_and_Engineering: bool
-    Stream_Computer_Science_in_AIML: bool
-    Stream_Computer_Science_in_Data_Science: bool
-    Stream_Electrical_Engineering: bool
-    Stream_Electrical_and_Electronics_Engineering: bool
-    Stream_Electronic_Engineering: bool
-    Stream_Electronics_Engineering: bool
-    Stream_Electronics_and_Communication_Engineering: bool
-    Stream_Electronics_and_Communication_and_Engineeing: bool
-    Stream_IMsc_Maths_and_Computing: bool
-    Stream_Information_Technology: bool
-    Stream_Mechanical_Engineering: bool
-    Stream_Production_Engineering: bool
+    college_tier_Tier_1: int
+    college_tier_Tier_2: int
+    college_tier_Tier_3: int
 
 
 @app.get("/")
 def home():
-    return {"message": "Placement Prediction API"}
+    return {
+        "message": "Placement Prediction API is running!"
+    }
 
 
 @app.post("/predict")
-def predict(data: PlacementInput):
+def predict(student: Student):
+    input_df = pd.DataFrame([student.model_dump()])
 
-    df = pd.DataFrame([{
-        "Gender": data.Gender,
-        "10th marks": data.tenth_marks,
-        "12th marks": data.twelfth_marks,
-        "Cgpa": data.Cgpa,
-        "Internships(Y/N)": data.Internships,
-        "Training(Y/N)": data.Training,
-        "Backlog in 5th sem": data.Backlog_5th_sem,
-        "Innovative Project(Y/N)": data.Innovative_Project,
-        "Communication level": data.Communication_level,
-        "Technical Course(Y/N)": data.Technical_Course,
+    input_df.rename(columns={
+        "college_tier_Tier_1": "college_tier_Tier 1",
+        "college_tier_Tier_2": "college_tier_Tier 2",
+        "college_tier_Tier_3": "college_tier_Tier 3",
+    }, inplace=True)
 
-        "10th board_CBSE": data.board10_CBSE,
-        "10th board_ICSE": data.board10_ICSE,
-        "10th board_State Board": data.board10_State,
-        "10th board_WBBSE": data.board10_WBBSE,
+    input_df = input_df[feature_names]
 
-        "12th board_BSEB": data.board12_BSEB,
-        "12th board_CBSE": data.board12_CBSE,
-        "12th board_CISCE": data.board12_CISCE,
-        "12th board_Diploma": data.board12_Diploma,
-        "12th board_Diploma board - MSBTE": data.board12_MSBTE_Diploma,
-        "12th board_ISC": data.board12_ISC,
-        "12th board_ISE": data.board12_ISE,
-        "12th board_MSBTE": data.board12_MSBTE,
-        "12th board_Other state Board": data.board12_Other_State,
-        "12th board_WBBSE": data.board12_WBBSE,
-        "12th board_WBCHSE": data.board12_WBCHSE,
+    prediction = int(model.predict(input_df)[0])
 
-        "Stream_Chemical Engineering": data.Stream_Chemical_Engineering,
-        "Stream_Civil Engineering": data.Stream_Civil_Engineering,
-        "Stream_Computer Science and Design": data.Stream_Computer_Science_and_Design,
-        "Stream_Computer Science and Engineering": data.Stream_Computer_Science_and_Engineering,
-        "Stream_Computer Science in AIML": data.Stream_Computer_Science_in_AIML,
-        "Stream_Computer Science in Data Science": data.Stream_Computer_Science_in_Data_Science,
-        "Stream_Electrical Engineering": data.Stream_Electrical_Engineering,
-        "Stream_Electrical and Electronics Engineering": data.Stream_Electrical_and_Electronics_Engineering,
-        "Stream_Electronic Engineering": data.Stream_Electronic_Engineering,
-        "Stream_Electronics Engineering": data.Stream_Electronics_Engineering,
-        "Stream_Electronics and Communication Engineering": data.Stream_Electronics_and_Communication_Engineering,
-        "Stream_Electronics and Communication and Engineeing": data.Stream_Electronics_and_Communication_and_Engineeing,
-        "Stream_IMsc Maths and Computing": data.Stream_IMsc_Maths_and_Computing,
-        "Stream_Information Technology": data.Stream_Information_Technology,
-        "Stream_Mechanical Engineering": data.Stream_Mechanical_Engineering,
-        "Stream_Production Engineering": data.Stream_Production_Engineering,
-    }])
-
-    prediction = model.predict(df)[0]
-    probability = model.predict_proba(df)[0]
+    confidence = None
+    if hasattr(model, "predict_proba"):
+        probabilities = model.predict_proba(input_df)[0]
+        confidence = round(float(probabilities[prediction]) * 100, 2)
 
     return {
-        "prediction": int(prediction),
-        "placement": "Placed" if prediction == 1 else "Not Placed",
-        "probability": {
-            "Not Placed": round(float(probability[0]), 4),
-            "Placed": round(float(probability[1]), 4)
-        }
+        "prediction": prediction,
+        "placement_status": "Placed" if prediction == 1 else "Not Placed",
+        "confidence": confidence
     }
